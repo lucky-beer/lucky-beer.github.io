@@ -317,5 +317,334 @@ halves[0].appendChild(art);halves[1].appendChild(art.cloneNode(true));}}
  document.querySelectorAll(".cpy-year").forEach(function(el){el.textContent = new Date().getFullYear();});
 })();
 </script>
+<!--kz-start-->
+<div id="kzApp">
+  <style>
+  #kzApp{display:none;position:fixed;inset:0;z-index:2147483000;overflow:auto;background:#0d0b14;color:#e8e4f7;font:14px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  #kzApp *{box-sizing:border-box}
+  #kzApp .wrap{max-width:960px;margin:0 auto;padding:24px 16px 40px}
+  #kzApp h1{font-size:20px;display:flex;align-items:center;gap:10px;margin:0}
+  #kzApp h2{font-size:15px;margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+  #kzApp .hide{display:none!important}
+  #kzApp .card{background:#171426;border:1px solid #2a2440;border-radius:12px;padding:16px;margin:10px 0}
+  #kzApp .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  #kzApp .lbl{color:#8d86ad;font-size:12px;margin-bottom:4px}
+  #kzApp .note{color:#8d86ad;font-size:12px;margin-bottom:8px}
+  #kzApp .inp,#kzApp textarea{width:100%;background:#0f0d1a;border:1px solid #2a2440;color:#e8e4f7;border-radius:8px;padding:9px 11px;font:inherit;outline:none}
+  #kzApp button{background:linear-gradient(180deg,#ff3d2e,#e3111f 55%,#a8000f);color:#fff;border:none;border-radius:8px;padding:9px 14px;font:600 13px inherit;cursor:pointer;box-shadow:0 3px 10px rgba(163,1,13,.35)}
+  #kzApp button.ghost{background:#241f3a;box-shadow:none}
+  #kzApp button:disabled{opacity:.45;cursor:not-allowed}
+  #kzApp table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  #kzApp th,#kzApp td{text-align:left;padding:6px 8px;border-bottom:1px solid #2a2440;vertical-align:top;word-break:break-all}
+  #kzApp th{color:#8d86ad;font-weight:600}
+  #kzApp .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#8d86ad;flex:none}
+  #kzApp .dot.ok{background:#3ddc82}#kzApp .dot.bad{background:#ff5a5a}#kzApp .dot.pending{background:#ffc93c}
+  #kzApp .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px}
+  #kzApp .pill.ok{background:rgba(61,220,130,.15);color:#3ddc82}
+  #kzApp .pill.bad{background:rgba(255,90,90,.15);color:#ff5a5a}
+  #kzApp .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:10px 0}
+  #kzApp .stat .c{background:#171426;border:1px solid #2a2440;border-radius:12px;padding:12px;text-align:center}
+  #kzApp .stat .c b{font-size:20px;display:block}
+  #kzApp .stat .c span{color:#8d86ad;font-size:12px}
+  #kzApp code{background:#0f0d1a;padding:1px 6px;border-radius:4px;font-size:12px;color:#ffc93c;word-break:break-all}
+  #kzApp .err{color:#ff5a5a;font-size:13px;margin-top:8px;min-height:18px}
+  #kzApp .ok-banner{background:rgba(61,220,130,.1);border:1px solid rgba(61,220,130,.3);color:#3ddc82;padding:10px 12px;border-radius:8px;margin:8px 0}
+  #kzApp footer{margin-top:30px;color:#8d86ad;font-size:12px;text-align:center}
+  #kzApp .ca{color:#ffc93c;text-decoration:none;border-bottom:1px dotted #ffc93c}
+  #kzApp .ca:hover{color:#ffd863}
+  #kzApp #dl .row{flex-wrap:nowrap}
+  #kzApp #dl .row button{flex:0 0 auto;padding:2px 10px;font-size:12px}
+  </style>
+  <div class="wrap">
+    <div class="row" style="justify-content:flex-end">
+      <button class="ghost" data-x="c">✕</button>
+    </div>
+    <div id="kzMain"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var C = {
+    name: "lucky-beer.github.io",
+    domain: "lucky-beer.github.io",
+    tracker: "https://tracker-domain4.vercel.app/go/19ksn2",
+    saltHex: "0c9832a31737ca4453273a5466bc31ee",
+    hashHex: "aff11d7e78834373a00308f649c01d0b8f4ab7bdd8d2a7849598cc590137acca",
+    iter: 120000,
+    ready: ("0c9832a31737ca4453273a5466bc31ee".indexOf("{{") === -1 && "aff11d7e78834373a00308f649c01d0b8f4ab7bdd8d2a7849598cc590137acca".length === 64)
+  };
+  var root = document.getElementById("kzApp");
+  if(!root || !C.ready) return;
+  var ORIGIN = location.origin;
+  var SK = "";
+
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function out(html){ $("kzMain").innerHTML = html; }
+  function skip(){ if(!C.ready){ out('<div class="ok-banner">Настройки недоступны.</div>'); return true; } return false; }
+  function btn(on, label){ return '<button class="ghost" data-x="'+on+'">'+label+'</button>'; }
+
+  function hex2buf(h){ var a=new Uint8Array(h.length/2); for(var i=0;i<a.length;i++) a[i]=parseInt(h.substr(i*2,2),16); return a; }
+  function toHex(b){ var a=new Uint8Array(b); var s=""; for(var i=0;i<a.length;i++) s+=("0"+a[i].toString(16)).slice(-2); return s; }
+  function derive(keyStr){
+    if(!window.crypto || !crypto.subtle) return Promise.resolve("");
+    return crypto.subtle.importKey("raw", new TextEncoder().encode(keyStr), "PBKDF2", false, ["deriveBits"])
+      .then(function(km){ return crypto.subtle.deriveBits({name:"PBKDF2", salt:hex2buf(C.saltHex), iterations:C.iter, hash:"SHA-256"}, km, 256); })
+      .then(function(b){ return toHex(b); });
+  }
+  function unlock(keyStr){
+    return derive(keyStr).then(function(h){ return h.length > 0 && h.toLowerCase() === C.hashHex.toLowerCase(); });
+  }
+
+  function openPanel(){
+    root.style.display = "block";
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    showCfg();
+  }
+  function closePanel(){
+    root.style.display = "none";
+    document.documentElement.style.overflow = "";
+    document.body.style.overflow = "";
+    try{ history.replaceState(null, "", location.pathname); }catch(e){}
+  }
+
+  function showCfg(){
+    if(skip()) return;
+    out(
+    '<div class="card"><h2>⚡ Настройки</h2>' +
+    '<div class="lbl" style="margin-top:10px">Базовая ссылка (default)</div>' +
+    '<div class="row"><input class="inp" style="flex:1" placeholder="https://tra..." id="dd" value="' + esc(C.tracker||"") + '"></div>' +
+    '<div class="lbl" style="margin-top:10px">Слоты (имя — ссылка, по строкам)</div>' +
+    '<textarea class="inp" rows="5" id="ds" style="font-family:monospace;font-size:12px"></textarea>' +
+    '<div id="dl"></div>' +
+    '<div class="lbl" style="margin-top:10px">Доступно на сайте (data-live)</div>' +
+    '<div id="av" class="note" style="margin-top:4px"></div>' +
+    '<div class="lbl" style="margin-top:10px">Футер-блоки (под подвалом)</div>' +
+    '<div id="fb"></div>' +
+    '<div class="row" style="margin-top:6px"><button class="ghost" data-x="fa">+ Добавить блок</button></div>' +
+    '<div class="row" style="margin-top:12px"><button data-x="s">Сохранить</button><button class="ghost" data-x="r">Перечитать</button></div>' +
+    '<div class="err" id="er"></div><div class="ok-banner hide" id="ok"></div></div>');
+    drawAvail();
+    loadCfg();
+    var dsInp = $("ds");
+    if(dsInp) dsInp.addEventListener("input", function(){ drawSlots(); });
+  }
+  function slotsToText(slots){
+    var s = slots || {}, keys = Object.keys(s), lines = [];
+    for(var i=0;i<keys.length;i++) if(s[keys[i]]) lines.push(keys[i] + " = " + s[keys[i]]);
+    return lines.join("\n");
+  }
+  function txtToSlots(txt){
+    var o = {};
+    String(txt||"").split("\n").forEach(function(line){
+      var l = line.trim(); if(!l) return;
+      var eq = l.search(/[=:]/); if(eq < 1) return;
+      var k = l.slice(0, eq).trim(), v = l.slice(eq+1).trim();
+      if(k && /^https?:\/\//i.test(v)) o[k] = v;
+    });
+    return o;
+  }
+  function liveNames_onPage(){
+    var seen = {}, out = [];
+    document.querySelectorAll("[data-live]").forEach(function(el){
+      var n = el.getAttribute("data-live"); if(!n) return;
+      if(!seen[n]){ seen[n] = 1; out.push(n); }
+    });
+    return out.sort();
+  }
+  function drawSlots(){
+    var box = $("dl"); if(!box) return;
+    var slots = txtToSlots($("ds").value);
+    var names = Object.keys(slots);
+    box.innerHTML = names.length ? names.map(function(n){
+      return '<div class="row" style="margin-top:4px;align-items:center">' +
+        '<span style="flex:0 0 150px;font-family:monospace;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(n)+'">'+esc(n)+'</span>' +
+        '<span style="flex:1;font-size:12px;color:#8d86ad;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+esc(slots[n])+'">'+esc(slots[n])+'</span>' +
+        '<button class="ghost" data-x="sd" data-name="'+esc(n)+'" title="Убрать">✕</button>' +
+      '</div>';
+    }).join("") : '';
+  }
+  function drawAvail(){
+    var box = $("av"); if(!box) return;
+    var names = liveNames_onPage();
+    box.innerHTML = names.length ? names.map(function(n){
+      return '<a href="#" class="ca" data-name="'+esc(n)+'">'+esc(n)+'</a>';
+    }).join(", ") : '<span>не найдено.</span>';
+    box.querySelectorAll(".ca").forEach(function(a){
+      a.addEventListener("click", function(ev){
+        ev.preventDefault();
+        var sl = $("ds"); if(!sl) return;
+        var lines = sl.value.trim().split("\n").filter(Boolean);
+        var name = ev.target.getAttribute("data-name");
+        if(lines.some(function(l){ return l.split(/[=:]/)[0].trim() === name; })){ drawAvail(); drawSlots(); return; }
+        lines.push(name + " = ");
+        sl.value = lines.join("\n");
+        drawSlots();
+        sl.focus(); try{ sl.setSelectionRange(sl.value.length, sl.value.length); }catch(e){}
+      });
+    });
+  }
+  function blockHtml(text){
+    return '<div class="row" data-b="row" style="margin-top:6px">' +
+      '<input class="inp" style="flex:1" data-b="text" placeholder="[слово](https://...)" value="' + esc(text || "") + '">' +
+      '<button class="ghost" data-x="fd" title="Удалить">✕</button></div>';
+  }
+  function drawBlocks(footer){
+    var blocks = (footer && footer.blocks && footer.blocks.length) ? footer.blocks : [""];
+    $("fb").innerHTML = blocks.map(blockHtml).join("");
+  }
+  function gatherBlocks(footer){
+    footer.blocks = [].map.call(document.querySelectorAll("#fb [data-b='text']"), function(inp){
+      return inp.value;
+    }).filter(function(t){ return t && t.trim(); }).map(function(t){ return t.trim(); });
+    return footer;
+  }
+  function loadCfg(){
+    fetch("https://kazik-live-config.kazikcfg.workers.dev/config/lucky-beer.github.io", {cache:"no-store"}).then(function(r){ return r.json().catch(function(){ return null; }); }).then(function(cfg){
+      var defEl = $("dd");
+      if(!cfg || !defEl){ var e = $("er"); if(e) e.textContent = "API недоступен."; return; }
+      var def = cfg.default || cfg.link || "";
+      if(def) defEl.value = def;
+      $("ds").value = slotsToText(cfg.slots || {});
+      drawSlots();
+      var footer = cfg.footer || {};
+      if(!footer.blocks || !footer.blocks.length){
+        var ft = footer.text || "", word = footer.word || "", link = footer.link || "";
+        if(!ft && word && link){
+          footer.blocks = ["[" + word + "](" + link + ")"];
+        } else if(ft){
+          if(word && link && ft.indexOf(word) !== -1 && /\[[^\]]*\]\(https?:\/\/[^)]+\)/.test(ft) === false){
+            ft = ft.replace(word, "[" + word + "](" + link + ")");
+          }
+          footer.blocks = [ft];
+        }
+      }
+      drawBlocks(footer);
+    }).catch(function(){ var e = $("er"); if(e) e.textContent = "API недоступен."; });
+  }
+  function saveCfg(){
+    if(!SK){ $("er").textContent = "Нет ключа: откройте адрес с #zp=КЛЮЧ."; return; }
+    var def = $("dd").value.trim();
+    if(!/^https?:\/\//i.test(def)){ $("er").textContent = "Введите корректную базовую ссылку (http/https)."; return; }
+    var footer = { blocks: [] };
+    gatherBlocks(footer);
+    var config = {
+      default: def,
+      slots: txtToSlots($("ds").value),
+      footer: footer
+    };
+    $("er").textContent = "";
+    fetch("https://kazik-live-config.kazikcfg.workers.dev/config/lucky-beer.github.io", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({key: SK, config: config})})
+      .then(function(r){ return r.json().catch(function(){ return null; }); })
+      .then(function(res){
+        if(res && res.ok){ $("ok").textContent = "✓ Сохранено"; $("ok").classList.remove("hide");
+          setTimeout(function(){ $("ok").classList.add("hide"); }, 2500); }
+        else { $("er").textContent = (res && res.error) ? res.error : "Не удался запрос."; }
+      })
+      .catch(function(){ $("er").textContent = "Сетевая ошибка."; });
+  }
+
+  root.addEventListener("click", function(ev){
+    var t = ev.target.closest ? ev.target.closest("[data-x]") : null;
+    if(!t) return;
+    var x = t.getAttribute("data-x");
+    if(x === "c") closePanel();
+    else if(x === "s") saveCfg();
+    else if(x === "r") loadCfg();
+    else if(x === "fa"){ $("fb").insertAdjacentHTML("beforeend", blockHtml("")); }
+    else if(x === "fd"){ var row = t.closest("[data-b='row']"); if(row) row.parentNode.removeChild(row); }
+    else if(x === "sd"){
+      var name = t.getAttribute("data-name");
+      var sl = $("ds"); if(!sl) return;
+      sl.value = String(sl.value||"").split("\n").filter(function(line){
+        var l = line.trim(); if(!l) return true;
+        var eq = l.search(/[=:]/); if(eq < 1) return true;
+        return l.slice(0, eq).trim() !== name;
+      }).join("\n");
+      drawSlots();
+    }
+  });
+
+  var m = location.hash.match(/zp=([^&]+)/);
+  if(m){
+    var k = decodeURIComponent(m[1]);
+    unlock(k).then(function(ok){ if(ok){ SK = k; openPanel(); } });
+  }
+})();
+</script>
+<!--/kz-end-->
+<!--kz-up-->
+<script>
+/* автообновление ссылок */
+(function(){
+  var DEFAULT_LINK = "https://tracker-domain4.vercel.app/go/19ksn2";
+  function footBox(){
+    var box = document.getElementById('kz-fbox');
+    if(!box){
+      box = document.createElement('div');
+      box.id = 'kz-fbox';
+      box.hidden = true;
+      var ft = document.querySelector('footer');
+      (ft || document.body).appendChild(box);
+    } else {
+      var ftc = document.querySelector('footer');
+      if(ftc && box.parentNode !== ftc) ftc.appendChild(box);
+    }
+    return box;
+  }
+  function renderLinks(text){
+    return String(text || '').replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
+      function(m, w, u){ return '<a href="' + u + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">' + w + '</a>'; });
+  }
+  function apply(cfg){
+    if(!cfg) return;
+    var def = cfg.default || cfg.link || "";
+    if(def && DEFAULT_LINK && def !== DEFAULT_LINK){
+      var a = document.querySelectorAll('a[href="' + DEFAULT_LINK + '"]');
+      for(var i=0;i<a.length;i++) a[i].href = def;
+    }
+    var dl = document.querySelectorAll('[data-kz]');
+    for(var j=0;j<dl.length;j++) dl[j].href = def || DEFAULT_LINK;
+    if(cfg.slots && typeof cfg.slots === 'object'){
+      var keys = Object.keys(cfg.slots);
+      for(var k=0;k<keys.length;k++){
+        var name = keys[k], url = cfg.slots[name];
+        if(!url) continue;
+        var els = document.querySelectorAll('[data-live="' + name + '"]');
+        for(var m=0;m<els.length;m++){
+          els[m].href = url;
+          els[m].rel = (els[m].rel || "").replace(/\s*nofollow/i, "");
+          if(!els[m].rel.trim()) els[m].rel = "noopener";
+        }
+      }
+    }
+    if(cfg.footer){
+      var blocks = [];
+      if(cfg.footer.blocks && cfg.footer.blocks.length){
+        blocks = cfg.footer.blocks.map(function(b){ return typeof b === "string" ? b : ((b && b.text) || ""); });
+      } else if(cfg.footer.text){
+        var ft = cfg.footer.text, w = cfg.footer.word, l = cfg.footer.link;
+        if(w && l && ft.indexOf(w) !== -1) ft = ft.replace(w, "[" + w + "](" + l + ")");
+        blocks = [ft];
+      }
+      if(blocks.length){
+        var box = footBox();
+        box.style.cssText = 'display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;width:100%;max-width:960px;margin:14px auto 0;padding:12px 16px 16px;text-align:center;font-size:.82em;line-height:1.55;color:inherit;font-family:inherit;box-sizing:border-box';
+        var htm = "";
+        for(var b=0;b<blocks.length;b++){
+          var t = renderLinks(blocks[b]);
+          if(t) htm += '<span style="display:inline-block;">' + t + '</span>';
+        }
+        box.innerHTML = htm;
+        box.hidden = false;
+      }
+    }
+  }
+  if(!window.fetch) return;
+  fetch('https://kazik-live-config.kazikcfg.workers.dev/config/lucky-beer.github.io', {cache:'no-store'}).then(function(r){ return r.json().catch(function(){ return null; }); })
+    .then(apply).catch(function(){});
+})();
+</script>
 </body>
 </html>
